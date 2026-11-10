@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a2c">
+  <meta name="description" content="SmartAlert connects nearby people with timely, multilingual community and road emergency alerts.">
+  <title>SmartAlert — Community safety network</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="SmartAlert home">
+      <span class="brand-mark" aria-hidden="true">S</span>
+      <span>Smart<span>Alert</span><small>COMMUNITY SAFETY NETWORK</small></span>
+    </a>
+    <div class="topbar-actions">
+      <span class="live-indicator"><i></i><span id="connection-label">Connecting</span></span>
+      <button class="icon-button" id="settings-button" aria-label="Open profile settings" title="Profile settings">⚙</button>
+    </div>
+  </header>
+
+  <section id="connection-help" class="connection-help" role="alert" hidden>
+    <div>
+      <strong id="connection-help-title">SmartAlert server required</strong>
+      <p id="connection-help-message">Start the SmartAlert backend, then open the app from its local address.</p>
+    </div>
+    <a id="connection-help-link" class="button button-primary" href="http://127.0.0.1:8000/">Open SmartAlert</a>
+  </section>
+
+  <main class="layout">
+    <section class="welcome-row">
+      <div>
+        <p class="eyebrow">LOCAL RESPONSE. SHARED AWARENESS.</p>
+        <h1>Good to have you here, <span id="greeting-name">Neighbor</span>.</h1>
+        <p class="muted">See what's happening nearby and get help moving sooner.</p>
+      </div>
+      <button id="sos-button" class="button button-danger"><span aria-hidden="true">!</span> Report an emergency</button>
+    </section>
+
+    <section class="stats-grid" aria-label="Community activity">
+      <article class="stat-card"><span class="stat-icon amber">◉</span><div><strong id="active-count">0</strong><span>Nearby alerts</span></div></article>
+      <article class="stat-card"><span class="stat-icon green">⌖</span><div><strong id="volunteer-count">0</strong><span>Nearby volunteers</span></div></article>
+      <article class="stat-card"><span class="stat-icon blue">✓</span><div><strong id="response-time">0</strong><span>Verified reports</span></div></article>
+      <article class="stat-card"><span class="stat-icon violet">◎</span><div><strong id="coverage-radius">10 km</strong><span>Your alert radius</span></div></article>
+    </section>
+
+    <section class="content-grid">
+      <div class="main-column">
+        <article class="panel map-panel">
+          <div class="panel-heading">
+            <div><h2>Live community map</h2><p class="muted">Alerts near your current location</p></div>
+            <button id="locate-button" class="button button-subtle">⌖ Use my location</button>
+          </div>
+          <div class="radar-map" id="radar-map" role="group" aria-label="Nearby alert map. Select a marker to view its alert.">
+            <span class="map-road road-one"></span><span class="map-road road-two"></span><span class="map-road road-three"></span>
+            <span class="map-block block-one"></span><span class="map-block block-two"></span><span class="map-block block-three"></span>
+            <span class="map-range range-one"></span><span class="map-range range-two"></span>
+            <span class="map-center" title="Your location"><i></i><b>You</b></span>
+            <div id="map-markers"></div>
+            <div class="map-caption"><span><i class="legend-dot self-dot"></i>Your location</span><span><i class="legend-dot alert-dot"></i>Active alert</span></div>
+          </div>
+          <div class="location-line"><span>⌖</span><span id="location-label">Demo location · Bengaluru</span><button id="edit-location" class="text-button">Edit</button></div>
+        </article>
+
+        <article class="panel alerts-panel">
+          <div class="panel-heading">
+            <div><h2>Nearby alerts</h2><p class="muted">Live updates from your community</p></div>
+            <label class="sr-only" for="alert-filter">Filter alerts</label>
+            <select id="alert-filter" class="filter-select"><option value="all">All alerts</option><option value="critical">Critical</option><option value="unverified">Needs verification</option></select>
+          </div>
+          <div id="alert-list" class="alert-list"><div class="empty-state">No nearby alerts. Your community is looking good.</div></div>
+        </article>
+      </div>
+
+      <aside class="side-column">
+        <article class="panel voice-panel">
+          <div class="panel-heading"><div><h2>Voice alerts</h2><p class="muted">Hear alerts in your preferred language</p></div><span class="voice-glyph" aria-hidden="true">◖))</span></div>
+          <label for="language-select" class="field-label">Announcement language</label>
+          <select id="language-select" class="field-control"><option value="en">English</option></select>
+          <p id="voice-pack-status" class="helper-text">Tamil, Hindi and Telugu alert phrases are included. Spoken audio requires the matching device voice.</p>
+          <button id="voice-preview-button" class="button button-subtle full-width" type="button">▶ Preview selected voice</button>
+          <button id="voice-button" class="button button-primary full-width"><span aria-hidden="true">◖))</span> Enable automatic voice</button>
+          <p id="voice-status" class="helper-text">Tap to allow spoken alerts while this app is open.</p>
+        </article>
+
+        <article class="panel notification-panel">
+          <div class="notification-icon">♧</div>
+          <h2>Stay informed, even away</h2>
+          <p class="muted">Enable browser push notifications to receive nearby alerts when the app is in the background.</p>
+          <button id="push-button" class="button button-outline full-width">Enable push notifications</button>
+          <p id="push-status" class="helper-text"></p>
+        </article>
+
+        <article class="panel volunteer-panel">
+          <div class="panel-heading"><div><h2>Volunteer nearby</h2><p class="muted">People ready to lend a hand</p></div><span class="volunteer-badge" id="volunteer-badge">0 online</span></div>
+          <div id="volunteer-list" class="volunteer-list"><p class="empty-inline">No volunteers have shared their location nearby yet.</p></div>
+          <button class="text-button" id="volunteer-join">Join as a volunteer →</button>
+        </article>
+
+        <article class="safety-note"><span>ⓘ</span><p><strong>In immediate danger?</strong><br>Contact your local emergency services first. SmartAlert is a community notification tool, not a dispatch service.</p></article>
+      </aside>
+    </section>
+  </main>
+
+  <dialog id="report-dialog" class="app-dialog">
+    <form id="alert-form" method="dialog">
+      <div class="dialog-heading"><div><p class="eyebrow">COMMUNITY ALERT</p><h2>Report an emergency</h2></div><button type="button" class="close-button" data-close="report-dialog" aria-label="Close">×</button></div>
+      <p class="muted">Nearby people will receive a location-based alert. For urgent help, call emergency services directly.</p>
+      <label class="field-label" for="category-select">What's happening?</label>
+      <select id="category-select" class="field-control" required>
+        <option value="accident">Road accident</option><option value="breakdown">Vehicle breakdown</option>
+        <option value="fire">Fire</option><option value="medical">Medical emergency</option>
+        <option value="roadblock">Road blockage</option><option value="vehicle">Vehicle-specific road alert</option>
+        <option value="other">Other emergency</option>
+      </select>
+      <div id="vehicle-target-wrap" hidden>
+        <label class="field-label" for="target-vehicle">Notify which vehicle type?</label>
+        <select id="target-vehicle" class="field-control">
+          <option value="all">All vehicle types</option><option value="car">Cars</option>
+          <option value="bike">Bikes / motorcycles</option><option value="lorry">Lorries / trucks</option>
+        </select>
+        <p class="helper-text">Only profiles registered with the selected vehicle type will receive this alert.</p>
+      </div>
+      <label class="field-label" for="priority-select">Priority</label>
+      <select id="priority-select" class="field-control"><option value="high">High — needs attention</option><option value="critical">Critical — immediate danger</option><option value="normal">Community notice</option></select>
+      <label class="field-label" for="place-input">Location label <span class="optional">(optional)</span></label>
+      <input id="place-input" class="field-control" maxlength="100" placeholder="Street, landmark or area">
+      <label class="field-label" for="details-input">Helpful details <span class="optional">(optional)</span></label>
+      <textarea id="details-input" class="field-control" rows="3" maxlength="300" placeholder="What should nearby people know?"></textarea>
+      <div class="direct-alert-fields">
+        <p class="eyebrow">DIRECT ALERT <span class="optional">(optional)</span></p>
+        <label class="field-label" for="recipient-phone">Recipient mobile number</label>
+        <input id="recipient-phone" class="field-control" type="tel" autocomplete="tel" maxlength="25" placeholder="+91 98765 43210">
+        <label class="field-label" for="custom-message">Custom message</label>
+        <textarea id="custom-message" class="field-control" rows="3" maxlength="500" placeholder="Write the message for this person"></textarea>
+        <p class="helper-text">Sent only to registered profiles that enabled direct alerts for this number, by in-app or configured push notification. Enter the number with its country code. SMS is not sent.</p>
+      </div>
+      <label class="field-label" for="radius-input">Notify people within <span id="radius-value">10</span> km</label>
+      <input id="radius-input" type="range" min="1" max="25" value="10">
+      <p id="form-error" class="form-error" role="alert"></p>
+      <div class="dialog-actions"><button type="button" class="button button-subtle" data-close="report-dialog">Cancel</button><button type="submit" class="button button-danger" id="submit-alert">Send nearby alert</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="profile-dialog" class="app-dialog">
+    <form id="profile-form" method="dialog">
+      <div class="dialog-heading"><div><p class="eyebrow">YOUR COMMUNITY PROFILE</p><h2>Profile & location</h2></div><button type="button" class="close-button" data-close="profile-dialog" aria-label="Close">×</button></div>
+      <label class="field-label" for="name-input">Display name</label>
+      <input id="name-input" class="field-control" maxlength="60" required>
+      <label class="field-label" for="role-select">I am a</label>
+      <select id="role-select" class="field-control"><option value="resident">Community member</option><option value="driver">Driver</option><option value="volunteer">Volunteer</option><option value="responder">Emergency responder</option></select>
+      <label class="field-label" for="vehicle-type-select">My vehicle <span class="optional">(optional)</span></label>
+      <select id="vehicle-type-select" class="field-control">
+        <option value="">No vehicle / don't filter</option><option value="car">Car</option>
+        <option value="bike">Bike / motorcycle</option><option value="lorry">Lorry / truck</option>
+      </select>
+      <p id="vehicle-profile-status" class="helper-text">Choose a vehicle type to receive targeted vehicle alerts.</p>
+      <label class="field-label" for="profile-phone">Mobile number <span class="optional">(optional)</span></label>
+      <input id="profile-phone" class="field-control" type="tel" autocomplete="tel" maxlength="25" placeholder="+91 98765 43210">
+      <label class="checkbox-field"><input id="phone-alerts-enabled" type="checkbox"> Allow direct SmartAlert alerts to this number</label>
+      <p class="helper-text">Use a number you control. It is stored in the local server state without encryption. This prototype does not verify ownership or send SMS.</p>
+      <label class="field-label" for="profile-language">Preferred language</label>
+      <select id="profile-language" class="field-control"><option value="en">English</option><option value="hi">हिन्दी · Hindi</option><option value="ta">தமிழ் · Tamil</option><option value="te">తెలుగు · Telugu</option><option value="bn">বাংলা · Bengali</option><option value="mr">मराठी · Marathi</option><option value="gu">ગુજરાતી · Gujarati</option><option value="kn">ಕನ್ನಡ · Kannada</option><option value="ml">മലയാളം · Malayalam</option><option value="pa">ਪੰਜਾਬੀ · Punjabi</option><option value="ur">اردو · Urdu</option></select>
+      <p class="helper-text">Alert text is available in English and the listed regional languages. Voice playback uses voices installed in your browser.</p>
+      <div class="coordinate-row"><div><label class="field-label" for="latitude-input">Latitude</label><input id="latitude-input" class="field-control" type="number" step="any" required></div><div><label class="field-label" for="longitude-input">Longitude</label><input id="longitude-input" class="field-control" type="number" step="any" required></div></div>
+      <label class="field-label" for="profile-radius">Receive alerts within <span id="profile-radius-value">10</span> km</label>
+      <input id="profile-radius" type="range" min="1" max="100" value="10">
+      <p class="helper-text">Your location is shared with this SmartAlert server to find nearby alerts and volunteers.</p>
+      <p id="profile-error" class="form-error" role="alert"></p>
+      <div class="dialog-actions"><button type="button" class="button button-subtle" data-close="profile-dialog">Cancel</button><button type="submit" class="button button-primary">Save profile</button></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <footer><span>SmartAlert community network</span><span>For emergencies, always contact local emergency services.</span></footer>
+  <script src="app.js" defer></script>
+</body>
+</html>
