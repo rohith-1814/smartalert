@@ -75,7 +75,17 @@ Run the backend unit tests with:
 
 ### Android demo app
 
-Open the project root in Android Studio with JDK 17+ and Android SDK Platform 35 installed, then run the `app` configuration. The Android Gradle project is under `android/app`. No Android SDK/JDK was available in the environment where this project was assembled, so build and device validation still need to be done in Android Studio.
+The Android project is included in the repository and uses the Gradle wrapper, so a separate Gradle installation is not required. Install JDK 17 or newer and Android SDK Platform 35 (Android Studio can install both; its bundled JDK can be selected as the Gradle JDK). For a command-line setup with Android SDK command-line tools, install the required SDK packages and build the debug APK from the project root:
+
+```powershell
+$env:JAVA_HOME = "C:\path\to\jdk-17"
+$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
+& "$env:ANDROID_HOME\cmdline-tools\latest\bin\android.exe" --sdk $env:ANDROID_HOME sdk install platforms/android-35
+& "$env:ANDROID_HOME\cmdline-tools\latest\bin\android.exe" --sdk $env:ANDROID_HOME sdk install build-tools/35.0.0
+.\gradlew.bat :android:app:assembleDebug
+```
+
+The APK is written to `android\app\build\outputs\apk\debug\app-debug.apk`. In Android Studio, open the repository root and run the `app` configuration, or run the same Gradle task from the Gradle tool window. The project requires Android Gradle Plugin 8.7.3 and Gradle 8.9; the checked-in wrapper selects the matching Gradle version.
 
 The app's default API URL, `http://10.0.2.2:8000`, is for the Android emulator talking to the development server on the same computer. On a physical phone, configure the computer's reachable LAN URL and allow the local development connection through its firewall. Keep the server on a trusted network; the prototype uses plain HTTP and has no authentication. Do not expose it publicly.
 
