@@ -1,0 +1,14 @@
+__pycache__/
+.venv/
+.gradle/
+.idea/
+local.properties
+android/**/build/
+*.iml
+*.apk
+*.aab
+*.jks
+*.keystore
+smartalert-state.json
+smartalert-state.tmp
+vapid_private.pem
