@@ -135,6 +135,8 @@ public final class MainActivity extends Activity {
             setStatus("Enter your name before enrolling.", true);
             return;
         }
+        String savedClientId = preferences.getString("client_id", "");
+        String clientId = savedClientId.isEmpty() ? UUID.randomUUID().toString() : savedClientId;
         Location location = lastKnownLocation();
         if (location == null) {
             setStatus("No location is available yet. Turn on device location, open a maps app, then try enrollment again.", true);
@@ -232,6 +234,7 @@ public final class MainActivity extends Activity {
             try {
                 JSONObject result = postJson(baseUrl, "/api/emergency/sos", request);
                 JSONObject incident = result.getJSONObject("incident");
+                int recipientCount = result.getJSONObject("delivery").optInt("recipient_count");
                 preferences.edit().remove("pending_request_id").apply();
                 runOnUiThread(() -> {
                     sendingSos = false;
@@ -239,7 +242,7 @@ public final class MainActivity extends Activity {
                     setStatus(
                             "Demo SOS recorded at " + incident.optString("place", "your enrolled location") +
                                     ". Nearby profile deliveries: " +
-                                    result.getJSONObject("delivery").optInt("recipient_count") +
+                                    recipientCount +
                                     ". NO emergency service or hospital was contacted.",
                             true);
                 });
